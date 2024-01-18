@@ -21,7 +21,7 @@ public class JobScheduler {
         this.jobLauncher = jobLauncher;
     }
 
-    @Scheduled(cron = "0 58 23 * * ?") // Ejecuta a la 1 am todos los días
+    @Scheduled(cron = "0 24 24 * * ?") // Ejecuta a la 1 am todos los días
     public void ejecutarCargarClientesJob() throws JobExecutionException {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
@@ -30,7 +30,7 @@ public class JobScheduler {
         jobLauncher.run(cargarClientesJob, jobParameters);
     }
 
-    @Scheduled(cron = "0 58 23 * * ?") // Ejecuta a la 1 am todos los días
+    @Scheduled(cron = "0 24 24 * * ?") // Ejecuta a la 1 am todos los días
     public void ejecutarCargarProductosJob() throws JobExecutionException {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
