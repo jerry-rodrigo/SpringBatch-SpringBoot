@@ -1,39 +1,51 @@
 package com.batch.SpringBatchApplication.ItemReader;
 
+import com.batch.SpringBatchApplication.config.ClienteRowMapper;
 import com.batch.SpringBatchApplication.dto.ClienteDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.extensions.excel.RowMapper;
 import org.springframework.batch.extensions.excel.poi.PoiItemReader;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
+@Slf4j
 public class ClienteExcelReader implements ItemReader<ClienteDTO> {
 
-    private final Resource resource;
+    private final PoiItemReader<ClienteDTO> excelReader;
 
-    public ClienteExcelReader(Resource resource) {
-        this.resource = resource;
+    public ClienteExcelReader(PoiItemReader<ClienteDTO> excelReader) {
+        this.excelReader = excelReader;
     }
 
     @Override
     public ClienteDTO read() throws Exception {
-        // Implementa la lógica para leer un cliente desde el archivo Excel
-        return null;
+        try {
+            return excelReader.read();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    /*public PoiItemReader<ClienteDTO> excelReader() {
+    @Bean
+    @StepScope
+    public PoiItemReader<ClienteDTO> excelReader() {
         PoiItemReader<ClienteDTO> reader = new PoiItemReader<>();
-        reader.setResource(resource);
-        reader.setRowMapper(clienteRowMapper());
-        return reader;
-    }
+        reader.setLinesToSkip(1);
+        reader.setResource(new ClassPathResource("clientes.xlsx"));
 
-    private RowMapper<ClienteDTO> clienteRowMapper() {
-        DefaultRowMapper<ClienteDTO> rowMapper = new DefaultRowMapper<>();
-        rowMapper.setTargetType(ClienteDTO.class);
-        return rowMapper;
+        try {
+            // Configura el RowMapper y otras propiedades según sea necesario
+            reader.setRowMapper(new ClienteRowMapper());
+            reader.afterPropertiesSet(); // Asegura que las propiedades estén configuradas correctamente
+        } catch (Exception e) {
+            log.error("Error al configurar el PoiItemReader: {}", e.getMessage(), e);
+            throw new RuntimeException("Error al configurar el PoiItemReader", e);
+        }
+
+        return reader;
     }
 
     @Bean
@@ -42,13 +54,13 @@ public class ClienteExcelReader implements ItemReader<ClienteDTO> {
         PoiItemReader<ClienteDTO> reader = new PoiItemReader<>();
         reader.setLinesToSkip(1);
         reader.setResource(new ClassPathResource("clientes.xlsx"));
-        reader.setRowMapper(clienteRowMapper());
+        reader.setRowMapper(new ClienteRowMapper());
         return reader;
     }
 
     @Bean
     public RowMapper<ClienteDTO> clienteRowMapper() {
         return new ClienteRowMapper();
-    }*/
+    }
 }
 

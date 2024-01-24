@@ -1,35 +1,53 @@
 package com.batch.SpringBatchApplication.ItemReader;
 
+import com.batch.SpringBatchApplication.config.ProductoRowMapper;
 import com.batch.SpringBatchApplication.dto.ProductoDTO;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.extensions.excel.RowMapper;
 import org.springframework.batch.extensions.excel.poi.PoiItemReader;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.core.io.Resource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
 
 public class ProductoExcelReader implements ItemReader<ProductoDTO> {
 
-    private final Resource resource;
+    private final PoiItemReader<ProductoDTO> excelReader;
 
-    public ProductoExcelReader(Resource resource) {
-        this.resource = resource;
+    public ProductoExcelReader(PoiItemReader<ProductoDTO> excelReader) {
+        this.excelReader = excelReader;
     }
 
     @Override
     public ProductoDTO read() throws Exception {
-        // Implementa la lógica para leer un producto desde el archivo Excel
-        return null;
+        try {
+            return excelReader.read();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    /*public PoiItemReader<ProductoDTO> excelReader() {
+    @Bean
+    @StepScope
+    public PoiItemReader<ProductoDTO> excelReader() {
         PoiItemReader<ProductoDTO> reader = new PoiItemReader<>();
-        reader.setResource(resource);
-        reader.setRowMapper(productoRowMapper());
+        reader.setLinesToSkip(1);
+        reader.setRowMapper(new ProductoRowMapper());
         return reader;
     }
 
-    private RowMapper<ProductoDTO> productoRowMapper() {
-        DefaultRowMapper<ProductoDTO> rowMapper = new DefaultRowMapper<>();
-        rowMapper.setTargetType(ProductoDTO.class);
-        return rowMapper;
-    }*/
+    @Bean
+    @StepScope
+    public ItemReader<ProductoDTO> productoExcelReader() {
+        PoiItemReader<ProductoDTO> reader = new PoiItemReader<>();
+        reader.setLinesToSkip(1);
+        reader.setResource(new ClassPathResource("productos.xlsx"));
+        reader.setRowMapper(new ProductoRowMapper());
+        return reader;
+    }
+
+    @Bean
+    public RowMapper<ProductoDTO> productoRowMapper() {
+        return new ProductoRowMapper();
+    }
 }

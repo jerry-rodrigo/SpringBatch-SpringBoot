@@ -12,5 +12,6 @@ public interface IClienteService {
     ClienteDTO registrarCliente(ClienteDTO clienteDTO);
     List<ClienteDTO> obtenerTodosClientes();
     void cargarClientesDesdeExcel(MultipartFile file) throws IOException;
+    Iterable<Cliente> saveAll(List<Cliente> clienteList);
 
 }

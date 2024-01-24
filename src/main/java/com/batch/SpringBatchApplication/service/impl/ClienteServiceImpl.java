@@ -76,4 +76,9 @@ public class ClienteServiceImpl implements IClienteService {
 
         iClienteRepository.saveAll(clientes);
     }
+
+    @Override
+    public Iterable<Cliente> saveAll(List<Cliente> clienteList) {
+        return iClienteRepository.saveAll(clienteList);
+    }
 }

@@ -87,7 +87,7 @@ public class ProductoServiceImpl implements IProductoService {
 
             Producto producto = new Producto();
             producto.setNombre(row.getCell(0).getStringCellValue());
-            producto.setPrecio(BigDecimal.valueOf(row.getCell(1).getNumericCellValue()));
+            producto.setPrecio((float) row.getCell(1).getNumericCellValue());
 
             productos.add(producto);
         }
